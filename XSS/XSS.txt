@@ -1,0 +1,39 @@
+- Non-persistent XSS (Reflected XSS)
+----------------------------------------------------
+GET /page?q=a<script>alert(45)</script>bcd HTTP/1.1
+
+HTTP/1.1 200
+...
+
+a<script>alert(45)</script>bcd
+----------------------------------------------------
+
+- Persistent XSS (Stored XSS)
+----------------------------------------------------
+
+POST /profile HTTP/1.1
+
+name=a<script>alert(45)</script>bcd
+
+
+GET /page?q=alert(45) HTTP/1.1
+
+HTTP/1.1 200
+...
+----------------------------------------------------
+
+- Dom XSS
+
+<script>
+function getParameterByName(name) {
+    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+        results = regex.exec(location.search);
+    return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+}
+
+eval(getParameterByName('q'))
+</script>
+----------------------------------------------------
+
+----------------------------------------------------
