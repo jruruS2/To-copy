@@ -1,0 +1,87 @@
+PayloadsAllTheThings - Directory Structure
+=============================================  
+
+## Main Categories:
+
+1. API Key Leaks
+2. Account Takeover
+3. Brute Force Rate Limit
+4. Business Logic Errors
+5. CORS Misconfiguration
+6. CRLF Injection
+7. CSS Injection
+8. CSV Injection
+9. CVE Exploits
+10. Clickjacking
+11. Client Side Path Traversal
+12. Command Injection
+13. Cross-Site Request Forgery
+14. DNS Rebinding
+15. DOM Clobbering
+16. Denial of Service
+17. Dependency Confusion
+18. Directory Traversal
+19. Encoding Transformations
+20. External Variable Modification
+21. File Inclusion
+22. Google Web Toolkit
+23. GraphQL Injection
+24. HTTP Parameter Pollution
+25. Headless Browser
+26. Hidden Parameters
+27. Insecure Deserialization
+28. Insecure Direct Object References
+29. Insecure Management Interface
+30. Insecure Randomness
+31. Insecure Source Code Management
+32. JSON Web Token
+33. Java RMI
+34. LDAP Injection
+35. LaTeX Injection
+36. Mass Assignment
+37. Methodology and Resources
+38. NoSQL Injection
+39. OAuth Misconfiguration
+40. ORM Leak
+41. Open Redirect
+42. Prompt Injection
+43. Prototype Pollution
+44. Race Condition
+45. Regular Expression
+46. Request Smuggling
+47. Reverse Proxy Misconfigurations
+48. SAML Injection
+49. SQL Injection
+50. Server Side Include Injection
+51. Server Side Request Forgery
+52. Server Side Template Injection
+53. Tabnabbing
+54. Type Juggling
+55. Upload Insecure Files
+56. Virtual Hosts
+57. Web Cache Deception
+58. Web Sockets
+59. XPATH Injection
+60. XS-Leak
+61. XSLT Injection
+62. XSS Injection
+63. XXE Injection
+64. Zip Slip
+
+## Additional Resources:
+
+- _LEARNING_AND_SOCIALS: Learning materials and social resources
+- _template_vuln: Template for vulnerability documentation
+- CONTRIBUTING.md: Contribution guidelines
+- DISCLAIMER.md: Disclaimer information
+- LICENSE: Repository license
+- README.md: Main documentation
+- custom.css: Custom styling
+- mkdocs.yml: MkDocs configuration
+
+## Repository Information:
+
+Project: PayloadsAllTheThings
+Owner: swisskyrepo
+Description: A comprehensive collection of security payloads and exploitation techniques across multiple vulnerability categories
+Focus: Cybersecurity, Web Application Security, Penetration Testing
